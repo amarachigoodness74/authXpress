@@ -4,10 +4,10 @@ import { logger } from '../utils';
 import { verifyAccessToken } from '../utils/jwtUtils';
 import { isUser } from '../services/user.service';
 import {
-  InvalidException,
-  NotFoundException,
+  WrongCredentialsException,
+  UnauthorizedUserException,
   CustomException,
-} from '../utils/errors';
+} from "../utils/errors";
 
 const isAuthenticated = async (
   req: Request,
@@ -16,7 +16,7 @@ const isAuthenticated = async (
 ) => {
   const tokenExist = req.headers['authorization'];
   if (!tokenExist) {
-    next(new (NotFoundException as any)());
+    next(new (UnauthorizedUserException as any)());
   } else {
     try {
       const token = tokenExist.split(' ')[1];
@@ -28,12 +28,12 @@ const isAuthenticated = async (
         const userEmail = decodedToken.payload.email;
         const result = await isUser(userEmail, next);
         if (!result) {
-          next(new (InvalidException as any)());
+          next(new (WrongCredentialsException as any)());
         }
         req.body.email = userEmail;
         next();
       } else {
-        next(new (InvalidException as any)());
+        next(new (UnauthorizedUserException as any)());
       }
     } catch (error: any) {
       logger.error(`isAuthenticated Middleware Error: ${error.message}`);

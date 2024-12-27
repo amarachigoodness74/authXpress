@@ -90,10 +90,10 @@ export const forgotPasswordController = async (
   const user = await findUserByEmail(email, next);
   if (!user) {
     // This is returned like this to prevent hackers from confirming unregistered emails
-    return res.status(200).json({
+    return next(res.status(200).json({
       status: "success",
       payload: { message: "Please check your mail" },
-    });
+    }));
   }
   const createAccessToken: ICreateToken = {
     email: user.email,
