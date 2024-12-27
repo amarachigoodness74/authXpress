@@ -39,7 +39,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.status(err.status || 500).json({
     status: "error",
-    errors: err.message,
+    error: err.message,
   });
 });
 

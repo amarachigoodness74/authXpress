@@ -90,10 +90,12 @@ export const forgotPasswordController = async (
   const user = await findUserByEmail(email, next);
   if (!user) {
     // This is returned like this to prevent hackers from confirming unregistered emails
-    return next(res.status(200).json({
-      status: "success",
-      payload: { message: "Please check your mail" },
-    }));
+    return next(
+      res.status(200).json({
+        status: "success",
+        message: "Please check your mail",
+      })
+    );
   }
   const createAccessToken: ICreateToken = {
     email: user.email,
@@ -118,7 +120,7 @@ export const resetPasswordController = async (
     if (updatedUser) {
       res.status(200).json({
         status: "success",
-        payload: { message: "Password updated successfully" },
+        message: "Password updated successfully",
       });
     }
     return next(new (CustomException as any)(500, "Operation unsuccessful"));

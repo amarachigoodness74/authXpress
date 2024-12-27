@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { SuccessResponse } from "../interfaces/user";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -14,19 +15,20 @@ const Register: React.FC = () => {
      setError(null);
 
      try {
-       const response = await axios.post(
-         `${process.env.REACT_APP_API}/auth/login`,
+       setError(null);
+       const {data} = await axios.post<SuccessResponse>(
+         `${process.env.REACT_APP_API}/auth/register`,
          { name, email, password },
          { headers: { "Content-Type": "application/json" } }
        );
 
-       const data = response.data;
-       navigate("/login");
+       if(data.message) {
+        navigate("/login");
+       }
      } catch (error: any) {
        if (axios.isAxiosError(error) && error.response) {
-         // Extract error message from server response
          const errorMessage = (error.response.data).error;
-         throw new Error(errorMessage);
+        setError(errorMessage);
        }
        throw new Error("An unexpected error occurred.");
      }
@@ -63,7 +65,7 @@ const Register: React.FC = () => {
         />
         <button
           type="submit"
-          className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
         >
           Sign Up
         </button>

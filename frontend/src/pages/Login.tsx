@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginError, LoginResponse } from "../interfaces/user";
+import { ErrorResponse, LoginResponse } from "../interfaces/user";
 import axios from "axios";
 
 const Login: React.FC = () => {
@@ -12,24 +12,25 @@ const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-  
+
     try {
-      const response = await axios.post<LoginResponse>(
+      setError(null);
+      const { data } = await axios.post<LoginResponse>(
         `${process.env.REACT_APP_API}/auth/login`,
         { email, password },
         { headers: { "Content-Type": "application/json" } }
       );
 
       // Save the token in local storage for authentication
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", data.payload.token);
 
-      const data = response.data;
-      navigate("/dashboard");
+      if (data.payload.user) {
+        navigate("/dashboard");
+      }
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
-        // Extract error message from server response
-        const errorMessage = (error.response.data as LoginError).error;
-        throw new Error(errorMessage);
+        const errorMessage = (error.response.data as ErrorResponse).error;
+        setError(errorMessage);
       }
       throw new Error("An unexpected error occurred.");
     }
@@ -63,6 +64,25 @@ const Login: React.FC = () => {
         >
           Login
         </button>
+        <div className="text-center text-sm mt-4">
+          <p>
+            Don't have an account?{" "}
+            <span
+              className="text-blue-500 cursor-pointer hover:underline"
+              onClick={() => navigate("/register")}
+            >
+              Register here
+            </span>
+          </p>
+          <p>
+            <span
+              className="text-blue-500 cursor-pointer hover:underline"
+              onClick={() => navigate("/forgot-password")}
+            >
+              Forgot Password
+            </span>
+          </p>
+        </div>
       </form>
     </div>
   );

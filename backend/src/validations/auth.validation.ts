@@ -28,6 +28,6 @@ export const validate = (req: Request, res: Response, next: NextFunction) => {
   }
   res.status(422).json({
     status: 'error',
-    errors: errors.array(),
+    error: errors.array()[0].msg,
   });
 };
