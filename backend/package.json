@@ -2,12 +2,11 @@
   "name": "authxpress",
   "version": "1.0.0",
   "description": "AuthXpress is a robust and secure authentication system",
-  "main": "index.js",
+  "main": "dist/src/server.js",
   "scripts": {
-    "build": "npx tsc",
-    "dev": "nodemon src/server.ts",
-    "start": "node dist/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "develop": "nodemon",
+    "build": "tsc -p tsconfig.json",
+    "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register ./dist/src/server.js"
   },
   "repository": {
     "type": "git",
@@ -35,6 +34,7 @@
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mongoose": "^8.9.2",
+    "ts-node": "^10.9.2",
     "winston": "^3.17.0"
   },
   "devDependencies": {

@@ -47,7 +47,6 @@ export const login = async (
 ): Promise<void> => {
   try {
     const { email, password } = req.body;
-
     const userIsValid = await validateUser(email, password, next);
 
     if (!userIsValid) {

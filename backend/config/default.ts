@@ -4,7 +4,7 @@ dotenv.config();
 
 export default {
   environment: {
-    port: Number(String(process.env.PORT)) || 5000,
+    port: Number(String(process.env.PORT)) || 1337,
   },
   dbConfig: {
     url: process.env.DBURL || "",

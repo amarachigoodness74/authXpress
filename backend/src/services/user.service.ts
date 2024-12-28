@@ -39,11 +39,7 @@ export const validateUser = async (
 
 export const isUser = async (email: string, next: NextFunction) => {
   try {
-    const user = await UserModel.findOne({
-      where: {
-        email,
-      },
-    });
+    const user = await UserModel.findOne({ email });
     return user !== null;
   } catch (error: any) {
     logger.error(`isUser UserService Error: ${error.message}`);
@@ -53,11 +49,7 @@ export const isUser = async (email: string, next: NextFunction) => {
 
 export const findUserByEmail = async (email: string, next: NextFunction) => {
   try {
-    const user = await UserModel.findOne({
-      where: {
-        email,
-      },
-    });
+    const user = await UserModel.findOne({ email });
     if (!user) {
       return false;
     }

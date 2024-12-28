@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ErrorResponse, LoginResponse } from "../interfaces/user";
 import axios from "axios";
+import { ErrorResponse, LoginResponse } from "../interfaces/user";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ const Login: React.FC = () => {
       // Save the token in local storage for authentication
       localStorage.setItem("token", data.payload.token);
 
-      if (data.payload.user) {
+      if (data.payload) {
         navigate("/dashboard");
       }
     } catch (error: any) {
@@ -32,7 +32,7 @@ const Login: React.FC = () => {
         const errorMessage = (error.response.data as ErrorResponse).error;
         setError(errorMessage);
       }
-      throw new Error("An unexpected error occurred.");
+      setError("An unexpected error occurred.");
     }
   };
 

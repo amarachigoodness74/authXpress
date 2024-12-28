@@ -23,7 +23,7 @@ const Register: React.FC = () => {
        );
 
        if(data.message) {
-        navigate("/login");
+        navigate("/");
        }
      } catch (error: any) {
        if (axios.isAxiosError(error) && error.response) {
@@ -74,7 +74,7 @@ const Register: React.FC = () => {
             Already have an account?{" "}
             <span
               className="text-blue-500 cursor-pointer hover:underline"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/")}
             >
               Login here
             </span>

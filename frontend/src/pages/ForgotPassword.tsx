@@ -59,7 +59,7 @@ const ForgotPassword: React.FC = () => {
           <p>
             <span
               className="text-blue-500 cursor-pointer hover:underline"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/")}
             >
               Login here
             </span>
