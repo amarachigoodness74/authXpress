@@ -18,7 +18,7 @@ export default {
       process.env.REFRESH_TOKEN_SECRET || "SsqQuxISJ6sZf+7/J6VfSWTtX",
   },
   emailConfig: {
-    port: process.env.SMTP_PORT || "435",
+    port: Number(process.env.SMTP_PORT) || 465,
     host: process.env.SMTP_HOST || "localhost:3000",
     user: process.env.SMTP_USER || "test@email.com",
     password: process.env.SMTP_PASS || "ISJSsqQux6s",
