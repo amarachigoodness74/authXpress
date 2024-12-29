@@ -6,7 +6,7 @@
   "scripts": {
     "develop": "nodemon",
     "build": "tsc -p tsconfig.json",
-    "start": "node ./dist/src/server.js"
+    "start": "npm run build && node ./dist/src/server.js"
   },
   "repository": {
     "type": "git",
