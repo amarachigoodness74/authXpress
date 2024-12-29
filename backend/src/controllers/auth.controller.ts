@@ -1,9 +1,12 @@
 import { NextFunction, Request, Response } from "express";
+import nodemailer from "nodemailer";
+import config from "config";
 import { logger } from "../utils";
 import {
   createUser,
   findUserByEmail,
   findUserById,
+  isUser,
   updatePassword,
   updateUser,
   validateUser,
@@ -100,12 +103,39 @@ export const forgotPasswordController = async (
     email: user.email,
     isRefreshToken: false,
   };
+
   const token = await signAccessToken(createAccessToken, next);
-  // TODO: We are to to send a mail to user here
-  res.status(200).json({
-    status: "success",
-    payload: { token },
+
+  const transporter = nodemailer.createTransport({
+    host: config.get("emailConfig.host") as string,
+    port: config.get("emailConfig.port") as number,
+    secure: false,
+    auth: {
+      user: config.get("emailConfig.user") as string,
+      pass: config.get("emailConfig.password") as string,
+    },
   });
+
+  const clientUrl = config.get("environment.clientUrl") as string;
+  const resetLink = `${clientUrl}/reset-password/${token}`;
+
+  try {
+    await transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: email,
+      subject: "Password Reset Request",
+      html: `<p>You requested a password reset. Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 1 hour.</p>`,
+    });
+
+    res.status(200).json({ message: "Password reset email sent." });
+  } catch (error: any) {
+    logger.error(
+      `forgotPasswordController AuthController Error: ${error.message}`
+    );
+    return next(
+      new (CustomException as any)("Failed to send password reset email.")
+    );
+  }
 };
 
 export const resetPasswordController = async (
@@ -113,10 +143,19 @@ export const resetPasswordController = async (
   res: Response,
   next: NextFunction
 ) => {
+  const { token, password } = req.body;
+
   try {
-    const { email, password } = req.body;
-    const updatedUser = await updatePassword(email, password, next);
-    if (updatedUser) {
+    const tokenIsValid = await verifyAccessToken(
+      { token, isRefreshToken: false },
+      next
+    );
+    if (!tokenIsValid) {
+      return next(new (CustomException as any)("Invalid or expired token."));
+    }
+    const confirmUser = await isUser(tokenIsValid.email, next);
+    if (confirmUser) {
+      await updatePassword(tokenIsValid.email, password, next);
       res.status(200).json({
         status: "success",
         message: "Password updated successfully",
@@ -127,7 +166,7 @@ export const resetPasswordController = async (
     logger.error(
       `resetPasswordController AuthController Error: ${error.message}`
     );
-    return next(new (ServerErrorException as any)());
+    return next(new (CustomException as any)("Invalid or expired token."));
   }
 };
 

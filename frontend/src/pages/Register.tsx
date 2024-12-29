@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SuccessResponse } from "../interfaces/user";
 
 const Register: React.FC = () => {
@@ -11,27 +11,27 @@ const Register: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleRegister = async (e: React.FormEvent) => {
-     e.preventDefault();
-     setError(null);
+    e.preventDefault();
+    setError(null);
 
-     try {
-       setError(null);
-       const {data} = await axios.post<SuccessResponse>(
-         `${process.env.REACT_APP_API}/auth/register`,
-         { name, email, password },
-         { headers: { "Content-Type": "application/json" } }
-       );
+    try {
+      setError(null);
+      const { data } = await axios.post<SuccessResponse>(
+        `${process.env.REACT_APP_API}/auth/register`,
+        { name, email, password },
+        { headers: { "Content-Type": "application/json" } }
+      );
 
-       if(data.message) {
+      if (data.message) {
         navigate("/");
-       }
-     } catch (error: any) {
-       if (axios.isAxiosError(error) && error.response) {
-         const errorMessage = (error.response.data).error;
+      }
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessage = error.response.data.error;
         setError(errorMessage);
-       }
-       throw new Error("An unexpected error occurred.");
-     }
+      }
+      throw new Error("An unexpected error occurred.");
+    }
   };
 
   return (
@@ -72,12 +72,12 @@ const Register: React.FC = () => {
         <div className="text-center text-sm mt-4">
           <p>
             Already have an account?{" "}
-            <span
+            <Link
+              to="/"
               className="text-blue-500 cursor-pointer hover:underline"
-              onClick={() => navigate("/")}
             >
               Login here
-            </span>
+            </Link>
           </p>
         </div>
       </form>

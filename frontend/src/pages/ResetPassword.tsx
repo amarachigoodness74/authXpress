@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { ErrorResponse, SuccessResponse } from "../interfaces/user";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ErrorResponse, SuccessResponse } from "../interfaces/user";
 
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<string | null>("null");
@@ -16,12 +17,17 @@ const ResetPassword: React.FC = () => {
 
     try {
       setError(null);
+      const queryParams = new URLSearchParams(location.search);
+      const token = queryParams.get("token");
       const { data } = await axios.post<SuccessResponse>(
         `${process.env.REACT_APP_API}/auth/reset-password`,
-        { password },
+        { token, password },
         { headers: { "Content-Type": "application/json" } }
       );
-      setAlert(data.message);
+      setAlert(`${data.message}! You will be redirected to login in 3 seconds`);
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
     } catch (error: any) {
       setAlert(null);
       if (axios.isAxiosError(error) && error.response) {
@@ -55,14 +61,9 @@ const ResetPassword: React.FC = () => {
           Reset Password
         </button>
         <div className="text-right text-sm mt-4">
-          <p>
-            <span
-              className="text-blue-500 cursor-pointer hover:underline"
-              onClick={() => navigate("/")}
-            >
-              Login here
-            </span>
-          </p>
+          <Link to="/" className="text-blue-500 cursor-pointer hover:underline">
+            Login here
+          </Link>
         </div>
       </form>
     </div>

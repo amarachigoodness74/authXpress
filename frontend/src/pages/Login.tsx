@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ErrorResponse, LoginResponse } from "../interfaces/user";
 
@@ -67,20 +67,20 @@ const Login: React.FC = () => {
         <div className="text-center text-sm mt-4">
           <p>
             Don't have an account?{" "}
-            <span
+            <Link
+              to="/register"
               className="text-blue-500 cursor-pointer hover:underline"
-              onClick={() => navigate("/register")}
             >
               Register here
-            </span>
+            </Link>
           </p>
           <p>
-            <span
+            <Link
+              to="/forgot-password"
               className="text-blue-500 cursor-pointer hover:underline"
-              onClick={() => navigate("/forgot-password")}
             >
               Forgot Password
-            </span>
+            </Link>
           </p>
         </div>
       </form>

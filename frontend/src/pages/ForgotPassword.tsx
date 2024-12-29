@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ErrorResponse, SuccessResponse } from "../interfaces/user";
 import axios from "axios";
 
@@ -56,14 +56,9 @@ const ForgotPassword: React.FC = () => {
           Forgot Password
         </button>
         <div className="text-right text-sm mt-4">
-          <p>
-            <span
-              className="text-blue-500 cursor-pointer hover:underline"
-              onClick={() => navigate("/")}
-            >
-              Login here
-            </span>
-          </p>
+          <Link to="/" className="text-blue-500 cursor-pointer hover:underline">
+            Login here
+          </Link>
         </div>
       </form>
     </div>

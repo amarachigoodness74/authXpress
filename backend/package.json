@@ -34,6 +34,7 @@
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mongoose": "^8.9.2",
+    "nodemailer": "^6.9.16",
     "ts-node": "^10.9.2",
     "winston": "^3.17.0"
   },
@@ -47,6 +48,7 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/lodash": "^4.17.13",
     "@types/node": "^22.10.2",
+    "@types/nodemailer": "^6.4.17",
     "concurrently": "^9.1.0",
     "i": "^0.3.7",
     "nodemon": "^3.1.9",
