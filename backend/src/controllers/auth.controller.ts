@@ -117,7 +117,7 @@ export const forgotPasswordController = async (
   });
 
   const clientUrl = config.get("environment.clientUrl") as string;
-  const resetLink = `${clientUrl}/reset-password/${token}`;
+  const resetLink = `${clientUrl}/reset-password?token=${token}`;
 
   try {
     await transporter.sendMail({

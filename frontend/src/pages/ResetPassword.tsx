@@ -9,8 +9,10 @@ const ResetPassword: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [alert, setAlert] = useState<string | null>("null");
+  const [isSumbitting, setIsSumbitting] = useState<boolean>(false);
 
   const handleResetPassword = async (e: React.FormEvent) => {
+    setIsSumbitting(true);
     e.preventDefault();
     setError(null);
     setAlert(null);
@@ -25,6 +27,7 @@ const ResetPassword: React.FC = () => {
         { headers: { "Content-Type": "application/json" } }
       );
       setAlert(`${data.message}! You will be redirected to login in 3 seconds`);
+      setIsSumbitting(false);
       setTimeout(() => {
         navigate("/");
       }, 3000);
@@ -34,7 +37,8 @@ const ResetPassword: React.FC = () => {
         const errorMessage = (error.response.data as ErrorResponse).error;
         setError(errorMessage);
       }
-      throw new Error("An unexpected error occurred.");
+      setIsSumbitting(false);
+      setError("An unexpected error occurred.");
     }
   };
 
@@ -57,8 +61,16 @@ const ResetPassword: React.FC = () => {
         <button
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          disabled={isSumbitting}
         >
-          Reset Password
+          {isSumbitting ? (
+            <div className="flex items-center justify-center space-x-2">
+              <div className="w-4 h-4 border-2 border-white-500 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-sm text-white">Submitting...</span>
+            </div>
+          ) : (
+            "Reset Password"
+          )}
         </button>
         <div className="text-right text-sm mt-4">
           <Link to="/" className="text-blue-500 cursor-pointer hover:underline">

@@ -8,8 +8,10 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isSumbitting, setIsSumbitting] = useState<boolean>(false);
 
   const handleLogin = async (e: React.FormEvent) => {
+    setIsSumbitting(true);
     e.preventDefault();
     setError(null);
 
@@ -32,6 +34,7 @@ const Login: React.FC = () => {
         const errorMessage = (error.response.data as ErrorResponse).error;
         setError(errorMessage);
       }
+      setIsSumbitting(false);
       setError("An unexpected error occurred.");
     }
   };
@@ -61,8 +64,16 @@ const Login: React.FC = () => {
         <button
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          disabled={isSumbitting}
         >
-          Login
+          {isSumbitting ? (
+            <div className="flex items-center justify-center space-x-2">
+              <div className="w-4 h-4 border-2 border-white-500 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-sm text-white">Submitting...</span>
+            </div>
+          ) : (
+            "Login"
+          )}
         </button>
         <div className="text-center text-sm mt-4">
           <p>

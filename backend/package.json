@@ -6,7 +6,7 @@
   "scripts": {
     "develop": "nodemon",
     "build": "tsc -p tsconfig.json",
-    "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register ./dist/src/server.js"
+    "start": "node ./dist/src/server.js"
   },
   "repository": {
     "type": "git",
