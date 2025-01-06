@@ -11,7 +11,11 @@ import {
   updateUser,
   validateUser,
 } from "../services/user.service";
-import { signAccessToken, verifyAccessToken } from "../utils/jwtUtils";
+import {
+  signAccessToken,
+  signPasswordAccessToken,
+  verifyAccessToken,
+} from "../utils/jwtUtils";
 import { ICreateToken } from "../interfaces/token.interface";
 import {
   AlreadyExistingUserException,
@@ -99,12 +103,7 @@ export const forgotPasswordController = async (
       })
     );
   }
-  const createAccessToken: ICreateToken = {
-    email: user.email,
-    isRefreshToken: false,
-  };
-
-  const token = await signAccessToken(createAccessToken, next);
+  const token = await signPasswordAccessToken({ email: user.email }, next);
 
   const transporter = nodemailer.createTransport({
     host: config.get("emailConfig.host") as string,
@@ -166,7 +165,10 @@ export const resetPasswordController = async (
     logger.error(
       `resetPasswordController AuthController Error: ${error.message}`
     );
-    return next(new (CustomException as any)("Invalid or expired token."));
+    if (error.name === "TokenExpiredError") {
+      return next(new (CustomException as any)("Expired token."));
+    }
+    return next(new (CustomException as any)("Invalid token."));
   }
 };
 
