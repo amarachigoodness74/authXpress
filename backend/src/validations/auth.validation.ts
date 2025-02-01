@@ -1,33 +1,33 @@
-import { body, validationResult } from 'express-validator';
-import { Request, Response, NextFunction } from 'express';
+import { body, validationResult } from "express-validator";
+import { Request, Response, NextFunction } from "express";
 
 export const signupValidation = () => [
-  body('name').not().isEmpty().trim().escape(),
-  body('email').isEmail().normalizeEmail(),
-  body('password').isLength({ min: 5 }).isStrongPassword(),
+  body("name").not().isEmpty().trim().escape(),
+  body("email").isEmail().normalizeEmail(),
+  body("password").isLength({ min: 5 }).isStrongPassword(),
 ];
 
 export const loginValidation = () => [
-  body('email').isEmail().normalizeEmail(),
-  body('password').not().isEmpty().trim().escape(),
+  body("email").isEmail().normalizeEmail(),
+  body("password").not().isEmpty().trim().escape(),
 ];
 
 export const forgetPasswordValidation = () => [
-  body('email').isEmail().normalizeEmail(),
+  body("email").isEmail().normalizeEmail(),
 ];
 
 export const resetPasswordValidation = () => [
-  body('token').not().isEmpty().trim().escape(),
-  body('password').isLength({ min: 5 }).isStrongPassword(),
+  body("token").not().isEmpty().trim().escape(),
+  body("password").isLength({ min: 5 }).isStrongPassword(),
 ];
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
-  const errors = validationResult(req);
+  const errors: any = validationResult(req);
   if (errors.isEmpty()) {
     return next();
   }
   res.status(422).json({
-    status: 'error',
-    error: errors.array()[0].msg,
+    status: "error",
+    error: `Invalid value for ${errors.array()[0].path}`,
   });
 };

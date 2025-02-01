@@ -30,12 +30,14 @@ const Login: React.FC = () => {
         navigate("/dashboard");
       }
     } catch (error: any) {
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessage = (error.response.data as ErrorResponse).error;
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.error || "Unexpected error occurred";
         setError(errorMessage);
+      } else {
+        setError("An unexpected error occurred");
       }
       setIsSumbitting(false);
-      setError("An unexpected error occurred.");
     }
   };
 

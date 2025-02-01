@@ -28,12 +28,15 @@ const Register: React.FC = () => {
         navigate("/");
       }
     } catch (error: any) {
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessage = error.response.data.error;
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.error || "Unexpected error occurred";
         setError(errorMessage);
+      } else {
+        setError("An unexpected error occurred");
       }
+    } finally {
       setIsSumbitting(false);
-      setError("An unexpected error occurred.");
     }
   };
 
