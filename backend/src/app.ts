@@ -3,7 +3,7 @@ import createError from "http-errors";
 import compression from "compression";
 import cors from "cors";
 import authRoutes from "./routes/auth.route";
-import { connectDB, corsOptions, logger } from "./utils";
+import { corsOptions } from "./utils";
 import { acountLimiter } from "./middlewares";
 
 const app = express();
@@ -40,8 +40,5 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     error: err.message || err.error,
   });
 });
-
-// Connect to MongoDB
-connectDB();
 
 export default app;

@@ -38,7 +38,6 @@ router.put(
   "/reset-password",
   resetPasswordValidation(),
   validate,
-  isAuthenticated,
   resetPasswordController
 );
 
@@ -46,6 +45,6 @@ router.put(
 router.get("/refresh-token", refreshTokenController);
 
 // Logout route
-router.get("/logout", logoutController);
+router.get("/logout/:id", logoutController);
 
 export default router;

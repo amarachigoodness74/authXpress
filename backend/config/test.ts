@@ -8,7 +8,7 @@ export default {
     clientUrl: Number(String(process.env.CLIENT_URL)) || "localhost:3000",
   },
   dbConfig: {
-    url: process.env.DBURL || "",
+    url: process.env.TEST_DB_URL || "",
     saltWorkFactor: Number(String(process.env.SALTWORKFACTOR)) || 10,
   },
   jwt: {

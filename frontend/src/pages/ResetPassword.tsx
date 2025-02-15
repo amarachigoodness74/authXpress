@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ErrorResponse, SuccessResponse } from "../interfaces/user";
+import { SuccessResponse } from "../interfaces/user";
 
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [alert, setAlert] = useState<string | null>("null");
+  const [alert, setAlert] = useState<string | null>(null);
   const [isSumbitting, setIsSumbitting] = useState<boolean>(false);
 
   const handleResetPassword = async (e: React.FormEvent) => {
@@ -21,7 +21,7 @@ const ResetPassword: React.FC = () => {
       setError(null);
       const queryParams = new URLSearchParams(location.search);
       const token = queryParams.get("token");
-      const { data } = await axios.post<SuccessResponse>(
+      const { data } = await axios.put<SuccessResponse>(
         `${process.env.REACT_APP_API}/auth/reset-password`,
         { token, password },
         { headers: { "Content-Type": "application/json" } }

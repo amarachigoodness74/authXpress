@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import nodemailer from "nodemailer";
 import config from "config";
 import { logger } from "../utils";
 import {
@@ -23,6 +22,8 @@ import {
   ServerErrorException,
   WrongCredentialsException,
 } from "../utils/errors";
+import sendMail from "../utils/emailSender";
+import transporter from "../utils/emailSender";
 
 export const register = async (
   req: Request,
@@ -41,6 +42,7 @@ export const register = async (
     // Create new user
     await createUser({ name, email, password }, next);
     res.status(201).json({ message: "User registered successfully" });
+    return;
   } catch (error: any) {
     logger.error(`Register Controller Error: ${error.message}`);
     return next(new (ServerErrorException as any)());
@@ -105,28 +107,22 @@ export const forgotPasswordController = async (
   }
   const token = await signPasswordAccessToken({ email: user.email }, next);
 
-  const transporter = nodemailer.createTransport({
-    host: config.get("emailConfig.host") as string,
-    port: config.get("emailConfig.port") as number,
-    secure: false,
-    auth: {
-      user: config.get("emailConfig.user") as string,
-      pass: config.get("emailConfig.password") as string,
-    },
-  });
-
   const clientUrl = config.get("environment.clientUrl") as string;
   const resetLink = `${clientUrl}/reset-password?token=${token}`;
 
   try {
-    await transporter.sendMail({
-      from: process.env.SMTP_USER,
+    const mailSent = await transporter.sendMail({
       to: email,
       subject: "Password Reset Request",
-      html: `<p>You requested a password reset. Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 1 hour.</p>`,
+      html: `<p>You requested a password reset. Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 1 hour.</p> Or copy link: ${resetLink}`,
     });
 
-    res.status(200).json({ message: "Password reset email sent." });
+    if (mailSent.messageId) {
+      res.status(200).json({ message: "Password reset email sent." });
+    } else {
+      res.status(500).json({ message: "Not successful, try again!" });
+    }
+    return;
   } catch (error: any) {
     logger.error(
       `forgotPasswordController AuthController Error: ${error.message}`
@@ -152,13 +148,14 @@ export const resetPasswordController = async (
     if (!tokenIsValid) {
       return next(new (CustomException as any)("Invalid or expired token."));
     }
-    const confirmUser = await isUser(tokenIsValid.email, next);
+    const confirmUser = await isUser(tokenIsValid.payload.email, next);
     if (confirmUser) {
       await updatePassword(tokenIsValid.email, password, next);
       res.status(200).json({
         status: "success",
         message: "Password updated successfully",
       });
+      return;
     }
     return next(new (CustomException as any)(500, "Operation unsuccessful"));
   } catch (error: any) {
@@ -194,6 +191,7 @@ export const refreshTokenController = async (
           status: "success",
           payload: { ...user, token: accessToken },
         });
+        return;
       }
     }
   } catch (error: any) {
@@ -213,6 +211,7 @@ export const logoutController = async (
 
     if (updatedUser) {
       res.status(200).json({ message: "Logged out successfully" });
+      return;
     }
   } catch (error: any) {
     logger.error(`updatePassword UserService Error: ${error.message}`);

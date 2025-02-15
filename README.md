@@ -45,6 +45,7 @@ npm install
 4. Start the development server: `npm start` in the frontend folder
 5. Start the development frontend application: `npm run develop` in the backend folder
 6. Open the app in your browser: `http://localhost:3000`
+7. Ensure backend test passes by running: `npm test` in the backend folder
 
 ## Future Enhancements
 
